@@ -1,10 +1,14 @@
 from flask import request
 from Services.cursoService import cursoService
 
-class cursoController:
+class CursoController:
 
     @staticmethod
     def get_all():
+        return cursoService.get_all()
+
+    @staticmethod
+    def show():
         return cursoService.get_all()
 
     @staticmethod

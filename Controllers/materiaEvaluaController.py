@@ -1,13 +1,5 @@
-from Controllers.matEvaController import (
-    matEvaController as materiaEvaluaController,
-    MatEvaController,
-    MateriaEvaluaController,
-    matEvaController,
-)
+from Controllers.matEvaController import MatEvaController as materiaEvaluaController
 
 __all__ = [
     "materiaEvaluaController",
-    "MatEvaController",
-    "MateriaEvaluaController",
-    "matEvaController",
 ]

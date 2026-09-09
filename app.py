@@ -14,6 +14,7 @@ from Routes.matEva_bp import mat_eva_bp
 app = Flask(__name__)
 app.config.from_object(Config) 
 mysql = MySQL(app)
+app.mysql = mysql
 
 # Ruta raíz / de prueba y bienvenida
 @app.route('/', methods=['GET'])

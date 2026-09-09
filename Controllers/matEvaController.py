@@ -1,10 +1,14 @@
 from flask import request
 from Services.matEvaService import matEvaService
 
-class matEvaController:
+class MatEvaController:
 
     @staticmethod
     def get_all():
+        return matEvaService.get_all()
+
+    @staticmethod
+    def show():
         return matEvaService.get_all()
 
     @staticmethod

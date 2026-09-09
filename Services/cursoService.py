@@ -61,8 +61,4 @@ class cursoService:
         c.execute(sql, (id,))
         current_app.mysql.connection.commit()
         c.close()
-<<<<<<< HEAD
         return jsonify({"message": "Curso eliminado correctamente"})
-=======
-        return jsonify({"message": "Curso eliminado correctamente"})
->>>>>>> 1ec947b02867a883f1941a1d1892d20cd71fe47b

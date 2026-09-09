@@ -61,8 +61,4 @@ class personaService:
         c.execute(sql, (id,))
         current_app.mysql.connection.commit()
         c.close()
-<<<<<<< HEAD
         return jsonify({"message": "Persona eliminada correctamente"})
-=======
-        return jsonify({"message": "Persona eliminada correctamente"})
->>>>>>> 1ec947b02867a883f1941a1d1892d20cd71fe47b

@@ -55,8 +55,8 @@ class instructorService:
         c.execute(sql, (id,))
         current_app.mysql.connection.commit()
         c.close()
-<<<<<<< HEAD
         return jsonify({"message": "Instructor eliminado correctamente"})
-=======
-        return jsonify({"message": "Instructor eliminado correctamente"})
->>>>>>> 1ec947b02867a883f1941a1d1892d20cd71fe47b
+
+
+InstructorService = instructorService
+

@@ -1,10 +1,14 @@
 from flask import request
 from Services.personaService import personaService
 
-class personaController:
+class PersonaController:
 
     @staticmethod
     def get_all():
+        return personaService.get_all()
+
+    @staticmethod
+    def show():
         return personaService.get_all()
 
     @staticmethod
@@ -23,8 +27,4 @@ class personaController:
 
     @staticmethod
     def delete(id):
-<<<<<<< HEAD
         return personaService.delete(id)
-=======
-        return personaService.delete(id)
->>>>>>> 1ec947b02867a883f1941a1d1892d20cd71fe47b

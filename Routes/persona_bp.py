@@ -1,12 +1,12 @@
 # blueprint  
 from flask import Blueprint
-from Controllers.aprendizController import aprendizController
+from Controllers.personaController import PersonaController
 
 persona_bp = Blueprint('persona_bp', __name__)
 
 @persona_bp.route('/', methods=['GET'])
 def home():
-    aprendizController.show()
+    return PersonaController.get_all()
 
 @persona_bp.route('/', methods=['POST'])
 def add():

@@ -1,10 +1,14 @@
 from flask import request
 from Services.imparteService import imparteService
 
-class imparteController:
+class ImparteController:
 
     @staticmethod
     def get_all():
+        return imparteService.get_all()
+
+    @staticmethod
+    def show():
         return imparteService.get_all()
 
     @staticmethod

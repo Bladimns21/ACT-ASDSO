@@ -2,13 +2,15 @@ from flask import jsonify
 from Services.aprendizService import aprendizService
 
 
-class aprendizController:
+class AprendizController:
 
+    @staticmethod
     def show():
         data = aprendizService.show()
         return jsonify(data), 200
 
 
+    @staticmethod
     def delete(idaprendiz):
         return aprendizService.delete(idaprendiz)
 

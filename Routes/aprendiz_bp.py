@@ -1,11 +1,11 @@
 from flask import Blueprint
-from Controllers.aprendizController import aprendizController
+from Controllers.aprendizController import AprendizController
 
 apr_bp = Blueprint('apr_bp', __name__)
 
 @apr_bp.route('/', methods=['GET'])
 def home():
-    return aprendizController.show()
+    return AprendizController.show()
 
 @apr_bp.route('/', methods=['POST'])
 def add():

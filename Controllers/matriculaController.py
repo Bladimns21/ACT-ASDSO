@@ -1,10 +1,14 @@
 from flask import request
 from Services.matriculaService import matriculaService
 
-class matriculaController:
+class MatriculaController:
 
     @staticmethod
     def get_all():
+        return matriculaService.get_all()
+
+    @staticmethod
+    def show():
         return matriculaService.get_all()
 
     @staticmethod

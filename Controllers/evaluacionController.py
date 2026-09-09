@@ -1,10 +1,14 @@
 from flask import request
 from Services.evaluacionService import evaluacionService
 
-class evaluacionController:
+class EvaluacionController:
 
     @staticmethod
     def get_all():
+        return evaluacionService.get_all()
+
+    @staticmethod
+    def show():
         return evaluacionService.get_all()
 
     @staticmethod
