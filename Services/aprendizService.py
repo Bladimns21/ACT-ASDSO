@@ -7,8 +7,20 @@ class aprendizService:
     def add():
         pass
 
-    def delete():
-        pass
+    def delete(uuid):
+        c = current_app.mysql.connection.cursor()
+        sql = """
+            DELETE FROM T_APRENDIZ WHERE IDAPRENDIZ = %s
+        """
+        c.execute(sql)
+        c.connection.commit()
+        if c.rowcount > 0 :
+            codigo = 200
+        else:
+            codigo = 404
+        c.close()
+        return {"codigo": codigo}
+
 
     def update():
         pass

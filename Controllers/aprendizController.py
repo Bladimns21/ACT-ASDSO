@@ -9,5 +9,9 @@ class aprendizController:
         return jsonify(data), 200
 
 
+    def delete(idaprendiz):
+        return aprendizService.delete(idaprendiz)
+
+
 
 # cyflz16
