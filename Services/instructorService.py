@@ -4,7 +4,7 @@ from Models.Instructor import Instructor
 class instructorService:
     @staticmethod
     def get_all():
-        sql = "SELECT * FROM T_INSTRUCTOR"
+        sql = "SELECT * FROM t_instructor"
         c = current_app.mysql.connection.cursor()
         c.execute(sql)
         data = c.fetchall()
@@ -13,7 +13,7 @@ class instructorService:
 
     @staticmethod
     def get_by_id(id):
-        sql = "SELECT * FROM T_INSTRUCTOR WHERE INS_ID = %s"
+        sql = "SELECT * FROM t_instructor WHERE INS_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         data = c.fetchone()
@@ -22,21 +22,28 @@ class instructorService:
 
     @staticmethod
     def add(data):
-        sql = """INSERT INTO T_INSTRUCTOR (INS_UUID, INS_ESPECIALIDAD, INS_PER_ID) 
+        import uuid
+        ins_uuid = data.get('INS_UUID') or str(uuid.uuid4())
+        sql = """INSERT INTO t_instructor (INS_UUID, INS_ESPECIALIDAD, INS_PER_ID) 
                  VALUES (%s, %s, %s)"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
-            data.get('INS_UUID'),
+            ins_uuid,
             data.get('INS_ESPECIALIDAD'),
             data.get('INS_PER_ID')
         ))
         current_app.mysql.connection.commit()
+        last_id = c.lastrowid
         c.close()
-        return jsonify({"message": "Instructor agregado correctamente"}), 201
+        return jsonify({
+            "message": "Instructor agregado correctamente",
+            "INS_ID": last_id,
+            "INS_UUID": ins_uuid
+        }), 201
 
     @staticmethod
     def update(id, data):
-        sql = """UPDATE T_INSTRUCTOR SET INS_ESPECIALIDAD=%s, INS_PER_ID=%s 
+        sql = """UPDATE t_instructor SET INS_ESPECIALIDAD=%s, INS_PER_ID=%s 
                  WHERE INS_ID=%s"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
@@ -50,7 +57,7 @@ class instructorService:
 
     @staticmethod
     def delete(id):
-        sql = "DELETE FROM T_INSTRUCTOR WHERE INS_ID = %s"
+        sql = "DELETE FROM t_instructor WHERE INS_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         current_app.mysql.connection.commit()

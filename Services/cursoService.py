@@ -4,7 +4,7 @@ from Models.Curso import Curso
 class cursoService:
     @staticmethod
     def get_all():
-        sql = "SELECT * FROM T_CURSO"
+        sql = "SELECT * FROM t_curso"
         c = current_app.mysql.connection.cursor()
         c.execute(sql)
         data = c.fetchall()
@@ -13,7 +13,7 @@ class cursoService:
 
     @staticmethod
     def get_by_id(id):
-        sql = "SELECT * FROM T_CURSO WHERE CUR_ID = %s"
+        sql = "SELECT * FROM t_curso WHERE CUR_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         data = c.fetchone()
@@ -22,11 +22,13 @@ class cursoService:
 
     @staticmethod
     def add(data):
-        sql = """INSERT INTO T_CURSO (CUR_UUID, CUR_NOMBRE, CUR_CODIGO, CUR_DURACION, CUR_COSTO, CUR_DESCRIPCION) 
+        import uuid
+        cur_uuid = data.get('CUR_UUID') or str(uuid.uuid4())
+        sql = """INSERT INTO t_curso (CUR_UUID, CUR_NOMBRE, CUR_CODIGO, CUR_DURACION, CUR_COSTO, CUR_DESCRIPCION) 
                  VALUES (%s, %s, %s, %s, %s, %s)"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
-            data.get('CUR_UUID'),
+            cur_uuid,
             data.get('CUR_NOMBRE'),
             data.get('CUR_CODIGO'),
             data.get('CUR_DURACION'),
@@ -34,12 +36,17 @@ class cursoService:
             data.get('CUR_DESCRIPCION')
         ))
         current_app.mysql.connection.commit()
+        last_id = c.lastrowid
         c.close()
-        return jsonify({"message": "Curso agregado correctamente"}), 201
+        return jsonify({
+            "message": "Curso agregado correctamente",
+            "CUR_ID": last_id,
+            "CUR_UUID": cur_uuid
+        }), 201
 
     @staticmethod
     def update(id, data):
-        sql = """UPDATE T_CURSO SET CUR_NOMBRE=%s, CUR_CODIGO=%s, CUR_DURACION=%s, CUR_COSTO=%s, CUR_DESCRIPCION=%s 
+        sql = """UPDATE t_curso SET CUR_NOMBRE=%s, CUR_CODIGO=%s, CUR_DURACION=%s, CUR_COSTO=%s, CUR_DESCRIPCION=%s 
                  WHERE CUR_ID=%s"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
@@ -56,7 +63,7 @@ class cursoService:
 
     @staticmethod
     def delete(id):
-        sql = "DELETE FROM T_CURSO WHERE CUR_ID = %s"
+        sql = "DELETE FROM t_curso WHERE CUR_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         current_app.mysql.connection.commit()

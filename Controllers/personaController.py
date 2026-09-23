@@ -1,5 +1,5 @@
 from flask import request
-from Services.personaService import personaService
+from Services.PersonaService import personaService
 
 class PersonaController:
 

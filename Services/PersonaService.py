@@ -4,12 +4,11 @@ from Services.dbUtils import serialize_rows, serialize_row
 import uuid
 
 class PersonaService:
-    # operaciones CRUD
-    # CREATE, READ, UPDATE, DELETE
+
 
     @staticmethod
     def show():
-        sql = "SELECT * FROM T_PERSONA"
+        sql = "SELECT * FROM t_persona"
         c = current_app.mysql.connection.cursor()
         c.execute(sql)
         data = c.fetchall()
@@ -22,7 +21,7 @@ class PersonaService:
 
     @staticmethod
     def get_by_id(id):
-        sql = "SELECT * FROM T_PERSONA WHERE PER_ID = %s"
+        sql = "SELECT * FROM t_persona WHERE PER_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         data = c.fetchone()
@@ -33,7 +32,7 @@ class PersonaService:
     def add(data):
         uuid_persona = str(uuid.uuid4())
         c = current_app.mysql.connection.cursor()
-        sql = """ INSERT INTO T_PERSONA (PER_UUID, PER_PRI_NOMBRE, PER_SEG_NOMBRE, PER_PRI_APELLIDO, PER_SEG_APELLIDO, PER_DOC)
+        sql = """ INSERT INTO t_persona (PER_UUID, PER_PRI_NOMBRE, PER_SEG_NOMBRE, PER_PRI_APELLIDO, PER_SEG_APELLIDO, PER_DOC)
                   VALUES (%s, %s, %s, %s, %s, %s) """
         pri_nombre = data.get("primer_nombre") or data.get("PER_PRI_NOMBRE") or ""
         seg_nombre = data.get("segundo_nombre") or data.get("PER_SEG_NOMBRE") or ""
@@ -63,7 +62,7 @@ class PersonaService:
     @staticmethod
     def update(id, data):
         c = current_app.mysql.connection.cursor()
-        sql = """ UPDATE T_PERSONA 
+        sql = """ UPDATE t_persona 
                   SET PER_PRI_NOMBRE = %s, PER_SEG_NOMBRE = %s, PER_PRI_APELLIDO = %s, PER_SEG_APELLIDO = %s, PER_DOC = %s
                   WHERE PER_ID = %s """
         pri_nombre = data.get("primer_nombre") or data.get("PER_PRI_NOMBRE")
@@ -81,7 +80,7 @@ class PersonaService:
     @staticmethod
     def delete(id):
         c = current_app.mysql.connection.cursor()
-        sql = "DELETE FROM T_PERSONA WHERE PER_ID = %s"
+        sql = "DELETE FROM t_persona WHERE PER_ID = %s"
         c.execute(sql, (id,))
         c.connection.commit()
         affected = c.rowcount

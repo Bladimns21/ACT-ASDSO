@@ -1,10 +1,11 @@
+import uuid
 from flask import current_app, jsonify
 from Models.Persona import Persona
 
 class personaService:
     @staticmethod
     def get_all():
-        sql = "SELECT * FROM T_PERSONA"
+        sql = "SELECT * FROM t_persona"
         c = current_app.mysql.connection.cursor()
         c.execute(sql)
         data = c.fetchall()
@@ -13,7 +14,7 @@ class personaService:
 
     @staticmethod
     def get_by_id(id):
-        sql = "SELECT * FROM T_PERSONA WHERE PER_ID = %s"
+        sql = "SELECT * FROM t_persona WHERE PER_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         data = c.fetchone()
@@ -22,24 +23,32 @@ class personaService:
 
     @staticmethod
     def add(data):
-        sql = """INSERT INTO T_PERSONA (PER_UUID, PER_PRI_NOMBRE, PER_SEG_NOMBRE, PER_PRI_APELLIDO, PER_SEG_APELLIDO, PER_DOCUMENTO) 
+        per_uuid = data.get('PER_UUID') or str(uuid.uuid4())
+        per_doc = data.get('PER_DOC') or data.get('PER_DOCUMENTO')
+        sql = """INSERT INTO t_persona (PER_UUID, PER_PRI_NOMBRE, PER_SEG_NOMBRE, PER_PRI_APELLIDO, PER_SEG_APELLIDO, PER_DOC) 
                  VALUES (%s, %s, %s, %s, %s, %s)"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
-            data.get('PER_UUID'),
+            per_uuid,
             data.get('PER_PRI_NOMBRE'),
             data.get('PER_SEG_NOMBRE'),
             data.get('PER_PRI_APELLIDO'),
             data.get('PER_SEG_APELLIDO'),
-            data.get('PER_DOCUMENTO')
+            per_doc
         ))
         current_app.mysql.connection.commit()
+        last_id = c.lastrowid
         c.close()
-        return jsonify({"message": "Persona agregada correctamente"}), 201
+        return jsonify({
+            "message": "Persona agregada correctamente",
+            "PER_ID": last_id,
+            "PER_UUID": per_uuid
+        }), 201
 
     @staticmethod
     def update(id, data):
-        sql = """UPDATE T_PERSONA SET PER_PRI_NOMBRE=%s, PER_SEG_NOMBRE=%s, PER_PRI_APELLIDO=%s, PER_SEG_APELLIDO=%s, PER_DOCUMENTO=%s 
+        per_doc = data.get('PER_DOC') or data.get('PER_DOCUMENTO')
+        sql = """UPDATE t_persona SET PER_PRI_NOMBRE=%s, PER_SEG_NOMBRE=%s, PER_PRI_APELLIDO=%s, PER_SEG_APELLIDO=%s, PER_DOC=%s 
                  WHERE PER_ID=%s"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
@@ -47,7 +56,7 @@ class personaService:
             data.get('PER_SEG_NOMBRE'),
             data.get('PER_PRI_APELLIDO'),
             data.get('PER_SEG_APELLIDO'),
-            data.get('PER_DOCUMENTO'),
+            per_doc,
             id
         ))
         current_app.mysql.connection.commit()
@@ -56,7 +65,7 @@ class personaService:
 
     @staticmethod
     def delete(id):
-        sql = "DELETE FROM T_PERSONA WHERE PER_ID = %s"
+        sql = "DELETE FROM t_persona WHERE PER_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         current_app.mysql.connection.commit()
