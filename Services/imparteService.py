@@ -4,7 +4,7 @@ from Models.Imparte import Imparte
 class imparteService:
     @staticmethod
     def get_all():
-        sql = "SELECT * FROM T_IMPARTE"
+        sql = "SELECT * FROM t_imparte"
         c = current_app.mysql.connection.cursor()
         c.execute(sql)
         data = c.fetchall()
@@ -13,7 +13,7 @@ class imparteService:
 
     @staticmethod
     def get_by_id(id):
-        sql = "SELECT * FROM T_IMPARTE WHERE IMP_ID = %s"
+        sql = "SELECT * FROM t_imparte WHERE IMP_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         data = c.fetchone()
@@ -22,23 +22,30 @@ class imparteService:
 
     @staticmethod
     def add(data):
-        sql = """INSERT INTO T_IMPARTE (IMP_UUID, IMP_ROL, IMP_FECHA_ASIGNACION, IMP_CUR_ID, IMP_INS_ID) 
+        import uuid
+        imp_uuid = data.get('IMP_UUID') or str(uuid.uuid4())
+        sql = """INSERT INTO t_imparte (IMP_UUID, IMP_ROL, IMP_FECHA_ASIGNACION, IMP_CUR_ID, IMP_INS_ID) 
                  VALUES (%s, %s, %s, %s, %s)"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
-            data.get('IMP_UUID'),
+            imp_uuid,
             data.get('IMP_ROL'),
             data.get('IMP_FECHA_ASIGNACION'),
             data.get('IMP_CUR_ID'),
             data.get('IMP_INS_ID')
         ))
         current_app.mysql.connection.commit()
+        last_id = c.lastrowid
         c.close()
-        return jsonify({"message": "Asignacion agregada correctamente"}), 201
+        return jsonify({
+            "message": "Asignacion agregada correctamente",
+            "IMP_ID": last_id,
+            "IMP_UUID": imp_uuid
+        }), 201
 
     @staticmethod
     def update(id, data):
-        sql = """UPDATE T_IMPARTE SET IMP_ROL=%s, IMP_FECHA_ASIGNACION=%s, IMP_CUR_ID=%s, IMP_INS_ID=%s 
+        sql = """UPDATE t_imparte SET IMP_ROL=%s, IMP_FECHA_ASIGNACION=%s, IMP_CUR_ID=%s, IMP_INS_ID=%s 
                  WHERE IMP_ID=%s"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
@@ -54,7 +61,7 @@ class imparteService:
 
     @staticmethod
     def delete(id):
-        sql = "DELETE FROM T_IMPARTE WHERE IMP_ID = %s"
+        sql = "DELETE FROM t_imparte WHERE IMP_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         current_app.mysql.connection.commit()

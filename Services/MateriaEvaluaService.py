@@ -9,7 +9,7 @@ class materia_evaluaService:
 
     @staticmethod
     def show():
-        sql = "SELECT * FROM T_MAT_EVA"
+        sql = "SELECT * FROM t_mat_eva"
         c = current_app.mysql.connection.cursor()
         c.execute(sql)
         data = c.fetchall()
@@ -22,7 +22,7 @@ class materia_evaluaService:
 
     @staticmethod
     def get_by_id(id):
-        sql = "SELECT * FROM T_MAT_EVA WHERE MATE_ID = %s"
+        sql = "SELECT * FROM t_mat_eva WHERE MATE_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         data = c.fetchone()
@@ -40,7 +40,7 @@ class materia_evaluaService:
             raise ValueError("eva_id y mat_id son requeridos")
 
         c = current_app.mysql.connection.cursor()
-        sql = """ INSERT INTO T_MAT_EVA (MATE_UUID, MATE_EVA_ID, MATE_MAT_ID, MATE_NOTA) 
+        sql = """ INSERT INTO t_mat_eva (MATE_UUID, MATE_EVA_ID, MATE_MAT_ID, MATE_NOTA) 
                   VALUES (%s, %s, %s, %s) """
         c.execute(sql, (uuid_mat_eva, eva_id, mat_id, nota))
         c.connection.commit()
@@ -59,7 +59,7 @@ class materia_evaluaService:
     @staticmethod
     def update(id, data):
         c = current_app.mysql.connection.cursor()
-        sql = """ UPDATE T_MAT_EVA 
+        sql = """ UPDATE t_mat_eva 
                   SET MATE_EVA_ID = %s, MATE_MAT_ID = %s, MATE_NOTA = %s 
                   WHERE MATE_ID = %s """
         eva_id = data.get("eva_id") or data.get("MATE_EVA_ID")
@@ -75,7 +75,7 @@ class materia_evaluaService:
     @staticmethod
     def delete(id):
         c = current_app.mysql.connection.cursor()
-        sql = "DELETE FROM T_MAT_EVA WHERE MATE_ID = %s"
+        sql = "DELETE FROM t_mat_eva WHERE MATE_ID = %s"
         c.execute(sql, (id,))
         c.connection.commit()
         affected = c.rowcount

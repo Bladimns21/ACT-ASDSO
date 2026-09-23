@@ -1,10 +1,11 @@
+import uuid
 from flask import current_app, jsonify
 from Models.Evaluacion import Evaluacion
 
 class evaluacionService:
     @staticmethod
     def get_all():
-        sql = "SELECT * FROM T_EVALAUCION"
+        sql = "SELECT * FROM t_evaluacion"
         c = current_app.mysql.connection.cursor()
         c.execute(sql)
         data = c.fetchall()
@@ -13,7 +14,7 @@ class evaluacionService:
 
     @staticmethod
     def get_by_id(id):
-        sql = "SELECT * FROM T_EVALAUCION WHERE EVA_ID = %s"
+        sql = "SELECT * FROM t_evaluacion WHERE EVA_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         data = c.fetchone()
@@ -22,30 +23,38 @@ class evaluacionService:
 
     @staticmethod
     def add(data):
-        sql = """INSERT INTO T_EVALAUCION (EVA_UUID, EVA_NOMBRE, EVA_CODIGO, EVA_PORCENTAJE, EVA_FECHA) 
+        eva_uuid = data.get('EVA_UUID') or str(uuid.uuid4())
+        eva_date = data.get('EVA_DATE') or data.get('EVA_FECHA')
+        sql = """INSERT INTO t_evaluacion (EVA_UUID, EVA_NOMBRE, EVA_CODIGO, EVA_PORCENTAJE, EVA_DATE) 
                  VALUES (%s, %s, %s, %s, %s)"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
-            data.get('EVA_UUID'),
+            eva_uuid,
             data.get('EVA_NOMBRE'),
             data.get('EVA_CODIGO'),
             data.get('EVA_PORCENTAJE'),
-            data.get('EVA_FECHA')
+            eva_date
         ))
         current_app.mysql.connection.commit()
+        last_id = c.lastrowid
         c.close()
-        return jsonify({"message": "Evaluacion agregada correctamente"}), 201
+        return jsonify({
+            "message": "Evaluacion agregada correctamente",
+            "EVA_ID": last_id,
+            "EVA_UUID": eva_uuid
+        }), 201
 
     @staticmethod
     def update(id, data):
-        sql = """UPDATE T_EVALAUCION SET EVA_NOMBRE=%s, EVA_CODIGO=%s, EVA_PORCENTAJE=%s, EVA_FECHA=%s 
+        eva_date = data.get('EVA_DATE') or data.get('EVA_FECHA')
+        sql = """UPDATE t_evaluacion SET EVA_NOMBRE=%s, EVA_CODIGO=%s, EVA_PORCENTAJE=%s, EVA_DATE=%s 
                  WHERE EVA_ID=%s"""
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (
             data.get('EVA_NOMBRE'),
             data.get('EVA_CODIGO'),
             data.get('EVA_PORCENTAJE'),
-            data.get('EVA_FECHA'),
+            eva_date,
             id
         ))
         current_app.mysql.connection.commit()
@@ -54,7 +63,7 @@ class evaluacionService:
 
     @staticmethod
     def delete(id):
-        sql = "DELETE FROM T_EVALAUCION WHERE EVA_ID = %s"
+        sql = "DELETE FROM t_evaluacion WHERE EVA_ID = %s"
         c = current_app.mysql.connection.cursor()
         c.execute(sql, (id,))
         current_app.mysql.connection.commit()
