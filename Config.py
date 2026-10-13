@@ -14,6 +14,7 @@ class Config:
     MYSQL_PASSWORD  = os.getenv('MYSQL_PASSWORD')
     MYSQL_DB        = os.getenv('MYSQL_DB')
     MYSQL_PORT      = int(os.getenv('MYSQL_PORT', 3306))
+    MYSQL_CURSORCLASS = 'DictCursor'
 
     # Opciones SSL para Aiven / bases de datos remotas
     MYSQL_CUSTOM_OPTIONS = {}

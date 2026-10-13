@@ -1,7 +1,7 @@
 flask
 flask-mysqldb
 python-dotenv
-
+gunicorn
 
 # pip install -r requirements.txt
 

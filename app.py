@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory, request
 from flask_mysqldb import MySQL
 from Config import Config
 
@@ -28,10 +28,28 @@ app.register_blueprint(imparte_bp, url_prefix='/api/imparte')
 app.register_blueprint(evaluacion_bp, url_prefix='/api/evaluacion')
 app.register_blueprint(mat_eva_bp, url_prefix='/api/mat-eva')
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+    return response
+
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({"status": "online"}), 200
 
+@app.route('/swagger.json', methods=['GET'])
+def get_swagger_json():
+    return send_from_directory('.', 'swagger.json')
+
+@app.route('/docs', methods=['GET'])
+@app.route('/docs/<path:path>', methods=['GET'])
+def get_swagger_ui(path='index.html'):
+    return send_from_directory('swagger-ui', path)
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000, host="0.0.0.0")
+
+
+  #  app.run(debug=True, port=5000, host="0.0.0.0")
 

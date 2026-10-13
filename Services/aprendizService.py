@@ -10,15 +10,14 @@ class aprendizService:
         c = current_app.mysql.connection.cursor()
         c.execute(sql)
         data = c.fetchall()
-        result = [
-            Aprendiz(
-                x[0],
-                x[1],
-                str(x[2]) if hasattr(x[2], 'isoformat') else x[2],
-                x[3]
-            ).to_dict()
-            for x in data
-        ]
+        result = []
+        for x in data:
+            apr_id = x['APR_ID'] if isinstance(x, dict) else x[0]
+            apr_uuid = x['APR_UUID'] if isinstance(x, dict) else x[1]
+            fecha_val = x['APR_FECHA_NAC'] if isinstance(x, dict) else x[2]
+            fecha = str(fecha_val) if hasattr(fecha_val, 'isoformat') else fecha_val
+            per_id = x['APR_PER_ID'] if isinstance(x, dict) else x[3]
+            result.append(Aprendiz(apr_id, apr_uuid, fecha, per_id).to_dict())
         c.close()
         return result
 
@@ -31,8 +30,12 @@ class aprendizService:
         c.close()
         if not x:
             return None
-        fecha = str(x[2]) if hasattr(x[2], 'isoformat') else x[2]
-        return Aprendiz(x[0], x[1], fecha, x[3]).to_dict()
+        apr_id = x['APR_ID'] if isinstance(x, dict) else x[0]
+        apr_uuid = x['APR_UUID'] if isinstance(x, dict) else x[1]
+        fecha_val = x['APR_FECHA_NAC'] if isinstance(x, dict) else x[2]
+        fecha = str(fecha_val) if hasattr(fecha_val, 'isoformat') else fecha_val
+        per_id = x['APR_PER_ID'] if isinstance(x, dict) else x[3]
+        return Aprendiz(apr_id, apr_uuid, fecha, per_id).to_dict()
 
     @staticmethod
     def add(data):

@@ -1,0 +1,1679 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Gestión Académica",
+    "description": "API REST",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Personas",
+      "description": "CRUD para la gestión de personas"
+    },
+    {
+      "name": "Aprendices",
+      "description": "CRUD para la gestión de aprendices"
+    },
+    {
+      "name": "Instructores",
+      "description": "CRUD para la gestión de instructores"
+    },
+    {
+      "name": "Cursos",
+      "description": "CRUD para la gestión de cursos"
+    },
+    {
+      "name": "Matrículas",
+      "description": "CRUD para la matrícula de aprendices en cursos"
+    },
+    {
+      "name": "Imparte",
+      "description": "CRUD para la asignación de instructores a cursos"
+    },
+    {
+      "name": "Evaluaciones",
+      "description": "CRUD para la definición de evaluaciones"
+    },
+    {
+      "name": "Mat-Eva (Calificaciones)",
+      "description": "CRUD para notas de evaluaciones por matrícula"
+    }
+  ],
+  "paths": {
+    "/api/persona/": {
+      "get": {
+        "tags": [
+          "Personas"
+        ],
+        "summary": "Listar personas",
+        "description": "Retorna todos los registros de personas almacenados en el sistema.",
+        "responses": {
+          "200": {
+            "description": "Lista de personas obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Persona"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Personas"
+        ],
+        "summary": "Crear persona",
+        "description": "Registra una nueva persona en el sistema.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Persona creada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Persona"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos obligatorios faltantes o inválidos"
+          }
+        }
+      }
+    },
+    "/api/persona/{id}": {
+      "get": {
+        "tags": [
+          "Personas"
+        ],
+        "summary": "Obtener persona por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único de la persona (PER_ID)",
+            "schema": {
+              "type": "integer",
+              "example": 21
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persona encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Persona"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Persona no encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Personas"
+        ],
+        "summary": "Actualizar persona",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único de la persona a actualizar",
+            "schema": {
+              "type": "integer",
+              "example": 21
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Persona actualizada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardMessageResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Persona no encontrada"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Personas"
+        ],
+        "summary": "Eliminar persona",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la persona a eliminar",
+            "schema": {
+              "type": "integer",
+              "example": 21
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persona eliminada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardMessageResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Persona no encontrada"
+          }
+        }
+      }
+    },
+    "/api/aprendiz/": {
+      "get": {
+        "tags": [
+          "Aprendices"
+        ],
+        "summary": "Listar aprendices",
+        "description": "Obtiene la lista de todos los aprendices registrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de aprendices obtenida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Aprendiz"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Aprendices"
+        ],
+        "summary": "Crear aprendiz",
+        "description": "Registra un nuevo aprendiz asociándolo a una persona existente.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AprendizInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Aprendiz registrado exitosamente"
+          },
+          "400": {
+            "description": "Campos obligatorios faltantes"
+          }
+        }
+      }
+    },
+    "/api/aprendiz/{id}": {
+      "get": {
+        "tags": [
+          "Aprendices"
+        ],
+        "summary": "Obtener aprendiz por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del aprendiz (APR_ID)",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aprendiz encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Aprendiz"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Aprendiz no encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Aprendices"
+        ],
+        "summary": "Actualizar aprendiz",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del aprendiz a actualizar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AprendizInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Aprendiz actualizado exitosamente"
+          },
+          "404": {
+            "description": "Aprendiz no encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Aprendices"
+        ],
+        "summary": "Eliminar aprendiz",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del aprendiz a eliminar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aprendiz eliminado exitosamente"
+          },
+          "404": {
+            "description": "Aprendiz no encontrado"
+          }
+        }
+      }
+    },
+    "/api/instructor/": {
+      "get": {
+        "tags": [
+          "Instructores"
+        ],
+        "summary": "Listar instructores",
+        "description": "Retorna todos los instructores registrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de instructores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instructor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Instructores"
+        ],
+        "summary": "Crear instructor",
+        "description": "Registra un nuevo instructor en el sistema.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstructorInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Instructor creado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/instructor/{id}": {
+      "get": {
+        "tags": [
+          "Instructores"
+        ],
+        "summary": "Obtener instructor por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del instructor (INS_ID)",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instructor encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instructor"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Instructor no encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Instructores"
+        ],
+        "summary": "Actualizar instructor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del instructor a actualizar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstructorInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Instructor actualizado exitosamente"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Instructores"
+        ],
+        "summary": "Eliminar instructor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del instructor a eliminar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instructor eliminado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/curso/": {
+      "get": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Listar cursos",
+        "description": "Obtiene la lista completa de cursos ofrecidos.",
+        "responses": {
+          "200": {
+            "description": "Lista de cursos obtenida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Curso"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Crear curso",
+        "description": "Registra un nuevo programa o curso de formación.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CursoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Curso creado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/curso/{id}": {
+      "get": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Obtener curso por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del curso (CUR_ID)",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Curso encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Curso"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Curso no encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Actualizar curso",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del curso a actualizar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CursoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Curso actualizado exitosamente"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Eliminar curso",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del curso a eliminar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Curso eliminado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/matricula/": {
+      "get": {
+        "tags": [
+          "Matrículas"
+        ],
+        "summary": "Listar matrículas",
+        "description": "Obtiene la lista de matrículas realizadas.",
+        "responses": {
+          "200": {
+            "description": "Lista de matrículas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Matricula"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Matrículas"
+        ],
+        "summary": "Crear matrícula",
+        "description": "Matricula a un aprendiz en un curso determinado.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatriculaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Matrícula registrada exitosamente"
+          }
+        }
+      }
+    },
+    "/api/matricula/{id}": {
+      "get": {
+        "tags": [
+          "Matrículas"
+        ],
+        "summary": "Obtener matrícula por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la matrícula (MAT_ID)",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matrícula encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Matricula"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Matrícula no encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Matrículas"
+        ],
+        "summary": "Actualizar matrícula",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la matrícula a actualizar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatriculaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Matrícula actualizada exitosamente"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Matrículas"
+        ],
+        "summary": "Eliminar matrícula",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la matrícula a eliminar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matrícula eliminada exitosamente"
+          }
+        }
+      }
+    },
+    "/api/imparte/": {
+      "get": {
+        "tags": [
+          "Imparte"
+        ],
+        "summary": "Listar asignaciones de impartición",
+        "description": "Obtiene la lista de instructores asignados a impartir cursos.",
+        "responses": {
+          "200": {
+            "description": "Lista de asignaciones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Imparte"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Imparte"
+        ],
+        "summary": "Asignar instructor a curso",
+        "description": "Asigna un instructor a un curso con un rol y fecha específicos.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImparteInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Asignación realizada exitosamente"
+          }
+        }
+      }
+    },
+    "/api/imparte/{id}": {
+      "get": {
+        "tags": [
+          "Imparte"
+        ],
+        "summary": "Obtener asignación por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la asignación (IMP_ID)",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asignación encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Imparte"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Asignación no encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Imparte"
+        ],
+        "summary": "Actualizar asignación",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la asignación a actualizar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImparteInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Asignación actualizada exitosamente"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Imparte"
+        ],
+        "summary": "Eliminar asignación",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la asignación a eliminar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asignación eliminada exitosamente"
+          }
+        }
+      }
+    },
+    "/api/evaluacion/": {
+      "get": {
+        "tags": [
+          "Evaluaciones"
+        ],
+        "summary": "Listar evaluaciones",
+        "description": "Obtiene la lista de evaluaciones creadas.",
+        "responses": {
+          "200": {
+            "description": "Lista de evaluaciones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Evaluacion"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Evaluaciones"
+        ],
+        "summary": "Crear evaluación",
+        "description": "Crea una nueva evaluación académica con ponderación y fecha.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluacionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Evaluación creada exitosamente"
+          }
+        }
+      }
+    },
+    "/api/evaluacion/{id}": {
+      "get": {
+        "tags": [
+          "Evaluaciones"
+        ],
+        "summary": "Obtener evaluación por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la evaluación (EVA_ID)",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Evaluación encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evaluacion"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Evaluación no encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Evaluaciones"
+        ],
+        "summary": "Actualizar evaluación",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la evaluación a actualizar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluacionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Evaluación actualizada exitosamente"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Evaluaciones"
+        ],
+        "summary": "Eliminar evaluación",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la evaluación a eliminar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Evaluación eliminada exitosamente"
+          }
+        }
+      }
+    },
+    "/api/mat-eva/": {
+      "get": {
+        "tags": [
+          "Mat-Eva (Calificaciones)"
+        ],
+        "summary": "Listar calificaciones",
+        "description": "Obtiene la lista de calificaciones registradas para las matrículas.",
+        "responses": {
+          "200": {
+            "description": "Lista de calificaciones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MatEva"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mat-Eva (Calificaciones)"
+        ],
+        "summary": "Registrar calificación",
+        "description": "Registra la nota de una evaluación asociada a una matrícula de aprendiz.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatEvaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Nota registrada exitosamente"
+          }
+        }
+      }
+    },
+    "/api/mat-eva/{id}": {
+      "get": {
+        "tags": [
+          "Mat-Eva (Calificaciones)"
+        ],
+        "summary": "Obtener calificación por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del registro de nota (MATE_ID)",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calificación encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatEva"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Calificación no encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Mat-Eva (Calificaciones)"
+        ],
+        "summary": "Actualizar calificación",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del registro de nota a actualizar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatEvaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Nota actualizada exitosamente"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Mat-Eva (Calificaciones)"
+        ],
+        "summary": "Eliminar calificación",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la calificación a eliminar",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Nota eliminada exitosamente"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Persona": {
+        "type": "object",
+        "properties": {
+          "PER_ID": {
+            "type": "integer",
+            "example": 21,
+            "readOnly": true
+          },
+          "PER_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1b2c3d4-0001-4a11-9c1a-000000000001"
+          },
+          "PER_PRI_NOMBRE": {
+            "type": "string",
+            "example": "Camila"
+          },
+          "PER_SEG_NOMBRE": {
+            "type": "string",
+            "nullable": true,
+            "example": "Andrea"
+          },
+          "PER_PRI_APELLIDO": {
+            "type": "string",
+            "example": "Ramirez"
+          },
+          "PER_SEG_APELLIDO": {
+            "type": "string",
+            "nullable": true,
+            "example": "Gomez"
+          },
+          "PER_DOC": {
+            "type": "integer",
+            "example": 1001234567
+          }
+        }
+      },
+      "PersonaInput": {
+        "type": "object",
+        "required": [
+          "primer_nombre",
+          "primer_apellido",
+          "documento"
+        ],
+        "properties": {
+          "primer_nombre": {
+            "type": "string",
+            "example": "Camila"
+          },
+          "segundo_nombre": {
+            "type": "string",
+            "example": "Andrea"
+          },
+          "primer_apellido": {
+            "type": "string",
+            "example": "Ramirez"
+          },
+          "segundo_apellido": {
+            "type": "string",
+            "example": "Gomez"
+          },
+          "documento": {
+            "type": "integer",
+            "example": 1001234567
+          }
+        }
+      },
+      "Aprendiz": {
+        "type": "object",
+        "properties": {
+          "APR_ID": {
+            "type": "integer",
+            "example": 1,
+            "readOnly": true
+          },
+          "APR_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "b1b2c3d4-0001-4a11-9c1a-000000000001"
+          },
+          "APR_FECHA_NAC": {
+            "type": "string",
+            "format": "date",
+            "example": "2002-05-15"
+          },
+          "APR_PER_ID": {
+            "type": "integer",
+            "example": 21
+          }
+        }
+      },
+      "AprendizInput": {
+        "type": "object",
+        "required": [
+          "APR_FECHA_NAC",
+          "APR_PER_ID"
+        ],
+        "properties": {
+          "APR_FECHA_NAC": {
+            "type": "string",
+            "format": "date",
+            "example": "2002-05-15"
+          },
+          "APR_PER_ID": {
+            "type": "integer",
+            "example": 21
+          },
+          "APR_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "b1b2c3d4-0001-4a11-9c1a-000000000001"
+          }
+        }
+      },
+      "Instructor": {
+        "type": "object",
+        "properties": {
+          "INS_ID": {
+            "type": "integer",
+            "example": 1,
+            "readOnly": true
+          },
+          "INS_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1b2c3d4-0001-4a11-9c1a-000000000001"
+          },
+          "INS_ESPECIALIDAD": {
+            "type": "string",
+            "example": "Desarrollo Web y Móvil"
+          },
+          "INS_PER_ID": {
+            "type": "integer",
+            "example": 24
+          }
+        }
+      },
+      "InstructorInput": {
+        "type": "object",
+        "required": [
+          "INS_ESPECIALIDAD",
+          "INS_PER_ID"
+        ],
+        "properties": {
+          "INS_ESPECIALIDAD": {
+            "type": "string",
+            "example": "Desarrollo Web y Móvil"
+          },
+          "INS_PER_ID": {
+            "type": "integer",
+            "example": 24
+          },
+          "INS_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1b2c3d4-0001-4a11-9c1a-000000000001"
+          }
+        }
+      },
+      "Curso": {
+        "type": "object",
+        "properties": {
+          "CUR_ID": {
+            "type": "integer",
+            "example": 1,
+            "readOnly": true
+          },
+          "CUR_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "d1b2c3d4-0001-4a11-9c1a-000000000001"
+          },
+          "CUR_NOMBRE": {
+            "type": "string",
+            "example": "Análisis y Desarrollo de Software"
+          },
+          "CUR_CODIGO": {
+            "type": "string",
+            "example": "ADSO-2026"
+          },
+          "CUR_DURACION": {
+            "type": "string",
+            "example": "24 meses"
+          },
+          "CUR_COSTO": {
+            "type": "number",
+            "example": 0.0
+          },
+          "CUR_DESCRIPCION": {
+            "type": "string",
+            "example": "Programa técnico laboral en desarrollo y programación de software"
+          }
+        }
+      },
+      "CursoInput": {
+        "type": "object",
+        "required": [
+          "CUR_NOMBRE",
+          "CUR_CODIGO",
+          "CUR_DURACION"
+        ],
+        "properties": {
+          "CUR_NOMBRE": {
+            "type": "string",
+            "example": "Análisis y Desarrollo de Software"
+          },
+          "CUR_CODIGO": {
+            "type": "string",
+            "example": "ADSO-2026"
+          },
+          "CUR_DURACION": {
+            "type": "string",
+            "example": "24 meses"
+          },
+          "CUR_COSTO": {
+            "type": "number",
+            "example": 0.0
+          },
+          "CUR_DESCRIPCION": {
+            "type": "string",
+            "example": "Programa técnico laboral en desarrollo y programación de software"
+          },
+          "CUR_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "d1b2c3d4-0001-4a11-9c1a-000000000001"
+          }
+        }
+      },
+      "Matricula": {
+        "type": "object",
+        "properties": {
+          "MAT_ID": {
+            "type": "integer",
+            "example": 1,
+            "readOnly": true
+          },
+          "MAT_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "e1b2c3d4-0001-4a11-9c1a-000000000001"
+          },
+          "MAT_ESTADO": {
+            "type": "string",
+            "example": "En formación"
+          },
+          "MAT_FECHA_INSCRIPCION": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-02-01"
+          },
+          "MAT_APR_ID": {
+            "type": "integer",
+            "example": 1
+          },
+          "MAT_CUR_ID": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "MatriculaInput": {
+        "type": "object",
+        "required": [
+          "MAT_ESTADO",
+          "MAT_FECHA_INSCRIPCION",
+          "MAT_APR_ID",
+          "MAT_CUR_ID"
+        ],
+        "properties": {
+          "MAT_ESTADO": {
+            "type": "string",
+            "example": "En formación"
+          },
+          "MAT_FECHA_INSCRIPCION": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-02-01"
+          },
+          "MAT_APR_ID": {
+            "type": "integer",
+            "example": 1
+          },
+          "MAT_CUR_ID": {
+            "type": "integer",
+            "example": 1
+          },
+          "MAT_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "e1b2c3d4-0001-4a11-9c1a-000000000001"
+          }
+        }
+      },
+      "Imparte": {
+        "type": "object",
+        "properties": {
+          "IMP_ID": {
+            "type": "integer",
+            "example": 1,
+            "readOnly": true
+          },
+          "IMP_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f1b2c3d4-0001-4a11-9c1a-000000000001"
+          },
+          "IMP_ROL": {
+            "type": "string",
+            "example": "Instructor Líder"
+          },
+          "IMP_FECHA_ASIGNACION": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-02-15"
+          },
+          "IMP_CUR_ID": {
+            "type": "integer",
+            "example": 1
+          },
+          "IMP_INS_ID": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "ImparteInput": {
+        "type": "object",
+        "required": [
+          "IMP_ROL",
+          "IMP_FECHA_ASIGNACION",
+          "IMP_CUR_ID",
+          "IMP_INS_ID"
+        ],
+        "properties": {
+          "IMP_ROL": {
+            "type": "string",
+            "example": "Instructor Líder"
+          },
+          "IMP_FECHA_ASIGNACION": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-02-15"
+          },
+          "IMP_CUR_ID": {
+            "type": "integer",
+            "example": 1
+          },
+          "IMP_INS_ID": {
+            "type": "integer",
+            "example": 1
+          },
+          "IMP_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f1b2c3d4-0001-4a11-9c1a-000000000001"
+          }
+        }
+      },
+      "Evaluacion": {
+        "type": "object",
+        "properties": {
+          "EVA_ID": {
+            "type": "integer",
+            "example": 1,
+            "readOnly": true
+          },
+          "EVA_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "11b2c3d4-0001-4a11-9c1a-000000000001"
+          },
+          "EVA_NOMBRE": {
+            "type": "string",
+            "example": "Parcial 1 - Modelado de Base de Datos"
+          },
+          "EVA_CODIGO": {
+            "type": "string",
+            "example": "EV-BD-01"
+          },
+          "EVA_PORCENTAJE": {
+            "type": "number",
+            "example": 30.0
+          },
+          "EVA_DATE": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-03-20"
+          }
+        }
+      },
+      "EvaluacionInput": {
+        "type": "object",
+        "required": [
+          "EVA_NOMBRE",
+          "EVA_CODIGO",
+          "EVA_PORCENTAJE",
+          "EVA_DATE"
+        ],
+        "properties": {
+          "EVA_NOMBRE": {
+            "type": "string",
+            "example": "Parcial 1 - Modelado de Base de Datos"
+          },
+          "EVA_CODIGO": {
+            "type": "string",
+            "example": "EV-BD-01"
+          },
+          "EVA_PORCENTAJE": {
+            "type": "number",
+            "example": 30.0
+          },
+          "EVA_DATE": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-03-20"
+          },
+          "EVA_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "11b2c3d4-0001-4a11-9c1a-000000000001"
+          }
+        }
+      },
+      "MatEva": {
+        "type": "object",
+        "properties": {
+          "MATE_ID": {
+            "type": "integer",
+            "example": 1,
+            "readOnly": true
+          },
+          "MATE_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "21b2c3d4-0001-4a11-9c1a-000000000001"
+          },
+          "MATE_NOTA": {
+            "type": "number",
+            "example": 4.5
+          },
+          "MATE_EVA_ID": {
+            "type": "integer",
+            "example": 1
+          },
+          "MATE_MAT_ID": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "MatEvaInput": {
+        "type": "object",
+        "required": [
+          "MATE_NOTA",
+          "MATE_EVA_ID",
+          "MATE_MAT_ID"
+        ],
+        "properties": {
+          "MATE_NOTA": {
+            "type": "number",
+            "example": 4.5
+          },
+          "MATE_EVA_ID": {
+            "type": "integer",
+            "example": 1
+          },
+          "MATE_MAT_ID": {
+            "type": "integer",
+            "example": 1
+          },
+          "MATE_UUID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "21b2c3d4-0001-4a11-9c1a-000000000001"
+          }
+        }
+      },
+      "StandardMessageResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Operación realizada correctamente"
+          },
+          "affected": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      }
+    }
+  }
+}
