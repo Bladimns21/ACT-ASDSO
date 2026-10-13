@@ -48,8 +48,6 @@ def get_swagger_json():
 def get_swagger_ui(path='index.html'):
     return send_from_directory('swagger-ui', path)
 
-if __name__ == '__main__':
-
 
   #  app.run(debug=True, port=5000, host="0.0.0.0")
 
